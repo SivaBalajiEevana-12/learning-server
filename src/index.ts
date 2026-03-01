@@ -11,7 +11,10 @@ import userAuthRoutes from './routes/userAuth';
 dotenv.config();
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: "*", // your frontend
+    credentials: true
+  }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(compression());

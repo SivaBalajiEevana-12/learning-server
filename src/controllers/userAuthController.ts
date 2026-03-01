@@ -1,5 +1,7 @@
 import { User, UserAddressSchema } from "../models/Users";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+// import {setCookie,getCookie} from "cookie";
 
 const registerUser = async (req: any, res: any) => {
   try {
@@ -69,5 +71,29 @@ const registerUser = async (req: any, res: any) => {
     return res.status(500).json({ message: err.message });
   }
 };
+const loginUser = async(req:any,res:any)=>{
+    const {email,password}=req.body;
+    console.log("secret",process.env.JWT_SECRET_KEY);
+    try{
+        const user =await User.findOne({email});
+        if(!user){
+            return res.status(400).json({message:"Invalid email or password"});
+        }
+        const isMatch= await bcrypt.compare(password,user.password);
+        if(isMatch){
+            const token=jwt.sign({id:user._id},process.env.JWT_SECRET_KEY as string) ;
+            res.cookie("token",token,{httpOnly:true,secure:false,sameSite:"lax"});
+            return res.status(200).json({user:user,message:"Login successful"});
+        }
+    }
+    catch(err:any){
+      console.error(err);
+        return res.status(500).json({ message: err.message });
+    }
+}
+const logoutUser = async(req:any,res:any)=>{
+    res.clearCookie("token");
+    return res.status(200).json({message:"Logout successful"});
+}
 
-export { registerUser };
+export { registerUser,loginUser,logoutUser };
