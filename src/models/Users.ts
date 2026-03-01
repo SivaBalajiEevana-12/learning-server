@@ -8,6 +8,8 @@ export interface Iuser extends mongoose.Document{
     password:string;
     jwt?:string;
     Address?:mongoose.Types.ObjectId[];
+    otp?:number;
+    confirmationEmail:boolean;
 }
 export interface IAddress{
     userId:mongoose.Types.ObjectId;
@@ -33,7 +35,9 @@ const Userschema =new mongoose.Schema<Iuser>({
     jwt:{type:String},
     Address:{type:[mongoose.Schema.Types.ObjectId],ref:'Address'},
     email:{type:String,required:true},
-    password:{type:String,required:true}
+    password:{type:String,required:true},
+    otp:{type:Number},
+    confirmationEmail:{type:Boolean,default:false}
 })
 const User =mongoose.model<Iuser>('User',Userschema);
 export  {User,UserAddressSchema};
