@@ -8,6 +8,8 @@ import mongoose from 'mongoose';
 import connectDB from './config/db';
 import dotenv from 'dotenv';
 import userAuthRoutes from './routes/userAuth';
+import uploadController from './middlewares/uploadController';
+import courseRoutes from './routes/courseroute';
 dotenv.config();
 const app = express();
 
@@ -25,3 +27,5 @@ server.listen(8081, () => {
     console.log('Server is running on port 8081');
 });
 app.use('/api/auth', userAuthRoutes);
+app.use('/api/upload', uploadController);
+app.use('/api/courses', courseRoutes);

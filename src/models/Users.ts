@@ -4,12 +4,15 @@ export interface Iuser extends mongoose.Document{
     firstName:string;
     lastName:string;
     email:string;
+    role:"user"|"admin"|"instructor";
     phoneNumber?:string;
     password:string;
     jwt?:string;
     Address?:mongoose.Types.ObjectId[];
     otp?:number;
     confirmationEmail:boolean;
+   enrolledCourse?:mongoose.Types.ObjectId[]
+   publishedCourse?:mongoose.Types.ObjectId[]
 }
 export interface IAddress{
     userId:mongoose.Types.ObjectId;
@@ -31,13 +34,17 @@ const Userschema =new mongoose.Schema<Iuser>({
     userName:{type:String,required:true,unique:true},
     firstName:{type:String,required:true},
     lastName:{type:String,required:true},
+        role:{type:String,enum:["user","admin","instructor"],default:"user"},
     phoneNumber:{type:String},
     jwt:{type:String},
-    Address:{type:[mongoose.Schema.Types.ObjectId],ref:'Address'},
-    email:{type:String,required:true},
+    Address:[{type:mongoose.Schema.Types.ObjectId,ref:'Address'}],
+    email:{type:String,required:true,unique:true},
     password:{type:String,required:true},
     otp:{type:Number},
-    confirmationEmail:{type:Boolean,default:false}
+    confirmationEmail:{type:Boolean,default:false},
+    enrolledCourse:[{type:mongoose.Schema.Types.ObjectId,ref:'Course'}],
+    publishedCourse:[{type:mongoose.Schema.Types.ObjectId,ref:'Course'}]
+
 })
 const User =mongoose.model<Iuser>('User',Userschema);
 export  {User,UserAddressSchema};
